@@ -16,10 +16,12 @@ def create_app(config_name='default'):
     from blueprints.main import main_bp
     from blueprints.auth import auth_bp
     from blueprints.dashboard import dashboard_bp
+    from blueprints.hidden_admin import hidden_admin_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(hidden_admin_bp)
     
     return app
 

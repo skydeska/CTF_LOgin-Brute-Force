@@ -192,6 +192,63 @@ class DashboardManager {
             }
         }, 3000);
     }
+
+    async loadSystemInfo() {
+        try {
+            const response = await fetch('/api/info');
+            if (!response.ok) throw new Error('Erreur réseau');
+            
+            const data = await response.json();
+            this.displaySystemInfo(data);
+        } catch (error) {
+            console.error('Erreur lors du chargement des infos système:', error);
+            this.showError('Erreur lors du chargement des infos système');
+        }
+    }
+
+    displaySystemInfo(info) {
+        const container = document.getElementById('system-info');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="bg-white p-4 rounded-lg border border-yellow-300">
+                <h4 class="font-semibold text-gray-900 mb-3">Informations Système</h4>
+                <div class="space-y-2 text-sm">
+                    <div><strong>Entreprise:</strong> ${info.company}</div>
+                    <div><strong>Version:</strong> ${info.version}</div>
+                    <div><strong>Environnement:</strong> ${info.environment}</div>
+                    <div><strong>Statut:</strong> ${info.system_status}</div>
+                </div>
+                
+                <div class="mt-4">
+                    <h5 class="font-semibold text-gray-900 mb-2">Endpoints Internes:</h5>
+                    <div class="space-y-1">
+                        ${info.internal_endpoints.map(endpoint => 
+                            `<div class="text-blue-600 font-mono text-xs">${endpoint}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded">
+                    <h5 class="font-semibold text-red-800 mb-2">🔒 Informations Admin:</h5>
+                    <div class="text-sm text-red-700">
+                        <div><strong>Username:</strong> ${info.admin_info.username}</div>
+                        <div><strong>Email:</strong> ${info.admin_info.email}</div>
+                        <div><strong>Rôle:</strong> ${info.admin_info.role}</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                    <p class="text-xs text-yellow-700">
+                        💡 <strong>Challenge CTF :</strong> Découvrez et accédez au panel admin caché !
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        container.classList.remove('hidden');
+        this.showSuccess('Informations système chargées avec succès !');
+    }
 }
 
 // Initialiser le dashboard quand le DOM est chargé

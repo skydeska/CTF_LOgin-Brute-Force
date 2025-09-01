@@ -72,4 +72,29 @@ def get_profile():
         'specialties': ['Web Security', 'Network Security', 'Social Engineering'],
         'rating': 4.8
     }
-    return jsonify(profile) 
+    return jsonify(profile)
+
+@dashboard_bp.route('/api/info')
+@login_required
+def get_info():
+    """API d'énumération pour le challenge CTF"""
+    info = {
+        'company': 'Pentest Recruit',
+        'version': '2.1.0',
+        'environment': 'production',
+        'internal_endpoints': [
+            '/api/missions',
+            '/api/profile',
+            '/api/info',
+            '/_hidden_panel_admin'  # Endpoint caché pour le challenge
+        ],
+        'admin_info': {
+            'username': 'superadmin',
+            'email': 'superadmin@internal.pentest-recruit.fr',
+            'role': 'System Administrator',
+            'last_login': '2024-09-01T18:30:00Z'
+        },
+        'system_status': 'operational',
+        'maintenance_mode': False
+    }
+    return jsonify(info) 
