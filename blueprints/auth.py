@@ -32,14 +32,14 @@ def login():
         # Récupérer l'IP du client
         client_ip = rate_limiter.get_client_ip(request)
         
-        # Vérifier si l'IP est bloquée
+        # Vérifier si l'IP est bloquée (uniquement si elle a des tentatives)
         if rate_limiter.is_ip_blocked(client_ip):
             remaining_time = rate_limiter.get_block_time_remaining(client_ip, username)
             flash(f'IP bloquée pour {int(remaining_time["ip"]/60)} minutes. Utilisez X-Forwarded-For pour contourner.', 'error')
             return render_template('auth/login.html')
         
-        # Vérifier si le username est bloqué
-        if rate_limiter.is_username_blocked(username):
+        # Vérifier si le username est bloqué (uniquement s'il existe et a des tentatives)
+        if rate_limiter.should_apply_rate_limit(username) and rate_limiter.is_username_blocked(username):
             remaining_time = rate_limiter.get_block_time_remaining(client_ip, username)
             flash(f'Compte bloqué pour {int(remaining_time["username"]/60)} minutes.', 'error')
             return render_template('auth/login.html')
@@ -47,8 +47,7 @@ def login():
         # Vérifier si l'utilisateur existe
         user = find_user(username)
         if not user:
-            # Username n'existe pas
-            rate_limiter.record_attempt(client_ip, username, success=False)
+            # Username n'existe pas - PAS de rate-limiting ici
             flash('Le nom d\'utilisateur n\'existe pas.', 'error')
             return render_template('auth/login.html')
         

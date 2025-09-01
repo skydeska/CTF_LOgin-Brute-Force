@@ -48,7 +48,7 @@ class RateLimiter:
         return False
     
     def record_attempt(self, ip, username, success=False):
-        """Enregistre une tentative de connexion"""
+        """Enregistre une tentative de connexion (uniquement pour username existant)"""
         current_time = time.time()
         
         # Enregistrer la tentative pour l'IP
@@ -56,12 +56,12 @@ class RateLimiter:
         # Garder seulement les 10 dernières tentatives
         self.ip_attempts[ip] = self.ip_attempts[ip][-10:]
         
-        # Enregistrer la tentative pour le username
+        # Enregistrer la tentative pour le username (uniquement si le username existe)
         self.username_attempts[username].append((current_time, success))
         # Garder seulement les 10 dernières tentatives
         self.username_attempts[username] = self.username_attempts[username][-10:]
         
-        # Vérifier si on doit bloquer
+        # Vérifier si on doit bloquer (uniquement pour les tentatives échouées)
         if not success:
             # Bloquer l'IP si trop de tentatives échouées
             failed_attempts = [t for t in self.ip_attempts[ip] if not t[1]]
@@ -105,6 +105,12 @@ class RateLimiter:
             'ip': ip_remaining,
             'username': username_remaining
         }
+    
+    def should_apply_rate_limit(self, username):
+        """Vérifie si le rate-limiting doit s'appliquer à ce username"""
+        # Le rate-limiting ne s'applique que si le username existe
+        # et a déjà des tentatives enregistrées
+        return username in self.username_attempts and len(self.username_attempts[username]) > 0
     
     def cleanup_old_attempts(self):
         """Nettoie les anciennes tentatives"""
