@@ -1,0 +1,8 @@
+{
+  "users": [
+    {"username": "adminroot", "password": "supersecret"},
+    {"username": "pentester1", "password": "password123"},
+    {"username": "hacker2024", "password": "ctf_master"},
+    {"username": "security_expert", "password": "secure_pass"}
+  ]
+} 

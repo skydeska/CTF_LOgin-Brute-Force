@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion - Pentest Recruit{% endblock %}
+
+{% block public_content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+            </div>
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                Connexion à votre compte
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Accédez à votre dashboard et découvrez les missions disponibles
+            </p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="bg-white py-8 px-6 shadow-xl rounded-lg">
+            <form class="space-y-6" method="POST">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">
+                        Nom d'utilisateur
+                    </label>
+                    <div class="mt-1">
+                        <input id="username" name="username" type="text" required
+                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                               placeholder="Entrez votre nom d'utilisateur">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">
+                        Mot de passe
+                    </label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required
+                               class="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                               placeholder="Entrez votre mot de passe">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox"
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                            Se souvenir de moi
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-blue-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </span>
+                        Se connecter
+                    </button>
+                </div>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-900 mb-3">Comptes de démonstration :</h3>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <div><strong>adminroot</strong> / supersecret</div>
+                    <div><strong>pentester1</strong> / password123</div>
+                    <div><strong>hacker2024</strong> / ctf_master</div>
+                    <div><strong>security_expert</strong> / secure_pass</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="text-center">
+            <p class="text-sm text-gray-600">
+                Nouveau sur la plateforme ? 
+                <a href="{{ url_for('main.contact') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                    Contactez-nous
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
