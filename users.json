@@ -1,8 +1,29 @@
 {
   "users": [
-    {"username": "adminroot", "password": "supersecret", "email": "admin@pentest-recruit.fr"},
-    {"username": "pentester1", "password": "password123", "email": "pentester1@pentest-recruit.fr"},
-    {"username": "hacker2024", "password": "ctf_master", "email": "hacker@ctf-master.com"},
-    {"username": "security_expert", "password": "secure_pass", "email": "expert@security-consulting.fr"}
+    {
+      "username": "devroot",
+      "password": "sup3rs3cr3tm3g4c0det0cr4ckf0ry0ubr0th34",
+      "email": "admin@pentest-recruit.fr"
+    },
+    {
+      "username": "pentester1",
+      "password": "password123",
+      "email": "pentester1@pentest-recruit.fr"
+    },
+    {
+      "username": "hacker2024",
+      "password": "ctf_master",
+      "email": "hacker@ctf-master.com"
+    },
+    {
+      "username": "security_expert",
+      "password": "secure_pass",
+      "email": "expert@security-consulting.fr"
+    },
+    {
+      "username": "superadmin",
+      "password": "supersecret",
+      "email": "superadmin@internal.pentest-recruit.fr"
+    }
   ]
-} 
+}

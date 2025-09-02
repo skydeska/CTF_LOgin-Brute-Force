@@ -13,45 +13,53 @@ Accéder au **panel d'administration caché** de l'application Pentest Recruit e
 
 ### 2️⃣ **Accès au Panel Caché**
 - Accédez à `/_hidden_panel_admin`
+- **SEUL superadmin** peut utiliser ce panel
 - Utilisez la fonctionnalité "Mot de passe oublié"
-- Saisissez l'email d'un utilisateur existant
+- Saisissez l'email: `superadmin@internal.pentest-recruit.fr`
 
 ### 3️⃣ **Brute-force OTP**
-- L'application génère un **OTP à 4 chiffres**
+- L'application génère un **OTP à 4 chiffres** (affiché comme XXXX)
 - L'OTP est valide **20 minutes** et lié à votre IP
-- **Brute-forcez** le code pour réinitialiser le mot de passe
+- **AUCUN RATE-LIMITING** sur le hidden panel - brute-force libre
+- **Brute-forcez** tous les codes 0000-9999 pour trouver le bon
+- **Créez un nouveau mot de passe** superadmin une fois l'OTP trouvé
 
 ### 4️⃣ **Accès au Dashboard Admin**
-- Connectez-vous avec le nouveau mot de passe
-- Accédez au dashboard administrateur
+- Connectez-vous avec superadmin + votre nouveau mot de passe
+- Accédez au dashboard administrateur superadmin
 - **Récupérez le flag CTF** !
+- **Note**: Seul superadmin peut accéder au hidden panel
 
 ## 🔑 Comptes de Test
 
 | Utilisateur | Mot de passe | Email |
 |-------------|--------------|-------|
-| `adminroot` | `supersecret` | `admin@pentest-recruit.fr` |
+| `devroot` | `sup3rs3cr3tm3g4c0det0cr4ckf0ry0ubr0th34` | `admin@pentest-recruit.fr` |
 | `pentester1` | `password123` | `pentester1@pentest-recruit.fr` |
 | `hacker2024` | `ctf_master` | `hacker@ctf-master.com` |
 | `security_expert` | `secure_pass` | `expert@security-consulting.fr` |
+| **`superadmin`** | `admin_default_2024` | **`superadmin@internal.pentest-recruit.fr`** |
 
 ## 🛡️ Mécanismes de Sécurité
 
-### **Rate-Limiting par Utilisateur et IP**
+### **Rate-Limiting (Dashboard Normal Seulement)**
 - **3 tentatives** de mauvais mot de passe par username **existant**
 - **3 tentatives** de mauvais mot de passe par IP
 - **Blocage de 10 minutes** après dépassement
 - **Usernames inexistants** : Aucun rate-limiting (pas de blocage)
+- **HIDDEN PANEL** : **AUCUN RATE-LIMITING** pour permettre le brute-force CTF
 
-### **Contournement via X-Forwarded-For**
+### **Contournement via X-Forwarded-For (Dashboard Seulement)**
 - L'application fait **confiance** au header `X-Forwarded-For`
 - Permet de **contourner** le blocage IP
 - **Challenge CTF** : manipulation d'en-têtes HTTP
+- **HIDDEN PANEL** : Pas de rate-limiting donc pas besoin de contournement
 
 ### **Système OTP Sécurisé**
 - **OTP unique** par utilisateur et IP
 - **Expiration** de 20 minutes
 - **Liaison IP** pour empêcher le partage
+- **AUCUNE LIMITATION** sur les tentatives OTP (vulnérabilité CTF)
 
 ## 🔍 Points d'Entrée
 
@@ -79,16 +87,18 @@ Accéder au **panel d'administration caché** de l'application Pentest Recruit e
 - Découverte d'endpoints cachés
 - Utilisation des APIs internes
 - Analyse des réponses JSON
+- Identification de l'email admin dans `/api/info`
 
 ### **Brute-Force**
-- Attaque sur code à 4 chiffres
+- Attaque sur code à 4 chiffres (0000-9999)
 - Gestion des sessions utilisateur
-- Respect des limites de temps
+- Respect des limites de temps (20 min)
+- **AUCUNE LIMITATION** de tentatives sur le hidden panel
 
-### **Manipulation d'En-têtes**
-- Utilisation de `X-Forwarded-For`
-- Contournement des protections IP
-- Bypass des rate-limiters
+### **Gestion des Sessions**
+- **Sessions séparées** entre dashboard normal et hidden admin
+- Utilisation de l'email révélé dans `/api/info`
+- Pas de manipulation d'en-têtes nécessaire pour le hidden panel
 
 ## 🎮 Scénario de Jeu
 
