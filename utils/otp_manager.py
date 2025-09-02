@@ -33,8 +33,15 @@ class OTPManager:
         
         return otp
     
-    def verify_otp(self, email, otp, ip):
-        """Vérifie un OTP"""
+    def verify_otp(self, email, otp, ip, consume=True):
+        """Vérifie un OTP
+        
+        Args:
+            email: Email associé à l'OTP
+            otp: Code OTP à vérifier
+            ip: IP du client
+            consume: Si True, supprime l'OTP après vérification réussie
+        """
         if email not in self.otps:
             return False, "OTP invalide ou expiré"
         
@@ -52,11 +59,20 @@ class OTPManager:
         
         # Vérifier l'OTP
         if stored_otp == otp:
-            # OTP valide, le supprimer
-            del self.otps[email]
+            # OTP valide
+            if consume:
+                # Supprimer l'OTP seulement si consume=True
+                del self.otps[email]
             return True, "OTP valide"
         else:
             return False, "OTP incorrect"
+    
+    def consume_otp(self, email):
+        """Supprime un OTP après utilisation finale"""
+        if email in self.otps:
+            del self.otps[email]
+            return True
+        return False
     
     def get_otp_info(self, email):
         """Retourne les informations d'un OTP (pour debug)"""
