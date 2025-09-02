@@ -26,8 +26,13 @@ def find_admin_user(username):
 @hidden_admin_bp.route('/_hidden_panel_admin')
 def admin_panel():
     """Page principale du panel admin caché - Nettoie les flash messages du dashboard normal"""
-    # Nettoyer tous les flash messages du dashboard normal pour éviter la confusion
-    session.pop('_flashes', None)
+    # NE PAS nettoyer les flash messages si on vient du reset password OU de la page de succès
+    # Pour permettre l'affichage des messages de succès du reset
+    referrer = request.headers.get('Referer', '')
+    if 'reset_password' not in referrer and 'password_reset_success' not in referrer:
+        # Nettoyer seulement les flash messages du dashboard normal
+        session.pop('_flashes', None)
+    
     return render_template('hidden_admin/login.html')
 
 @hidden_admin_bp.route('/_hidden_panel_admin/login', methods=['POST'])
@@ -54,7 +59,11 @@ def admin_login():
         session['hidden_admin_username'] = username
         session['hidden_admin_logged_in'] = True
         session['hidden_admin_email'] = user.get('email', '')
-        flash(f'Connexion admin réussie ! Bienvenue {username}', 'success')
+        
+        # Messages de bienvenue pour superadmin
+        flash(f'🎉 Connexion admin réussie ! Bienvenue {username}', 'success')
+        flash('🔒 Accès au dashboard administrateur débloqué', 'info')
+        
         return redirect(url_for('hidden_admin.admin_dashboard'))
     else:
         # Mot de passe incorrect - PAS de rate limiting
@@ -148,9 +157,15 @@ def reset_password():
                 try:
                     with open('users.json', 'w') as f:
                         json.dump({'users': users}, f, indent=2)
-                    flash('Mot de passe superadmin mis à jour avec succès !', 'success')
-                    flash('Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.', 'info')
-                    return redirect(url_for('hidden_admin.admin_panel'))
+                    
+                    # Messages de succès détaillés
+                    flash('🎉 Félicitations ! Mot de passe superadmin réinitialisé avec succès !', 'success')
+                    flash('🔑 Votre nouveau mot de passe a été sauvegardé.', 'info')
+                    flash('🚀 Vous pouvez maintenant vous connecter au panel admin avec vos nouveaux identifiants.', 'info')
+                    flash('Username: superadmin | Nouveau mot de passe: [celui que vous venez de créer]', 'warning')
+                    
+                    # Rediriger vers la page de succès au lieu du login
+                    return redirect(url_for('hidden_admin.password_reset_success'))
                 except Exception as e:
                     flash(f'Erreur lors de la sauvegarde: {e}', 'error')
             else:
@@ -161,6 +176,11 @@ def reset_password():
             flash('Essayez un autre code à 4 chiffres. Temps restant avant expiration.', 'warning')
     
     return render_template('hidden_admin/reset_password.html')
+
+@hidden_admin_bp.route('/_hidden_panel_admin/password_reset_success')
+def password_reset_success():
+    """Page de succès après réinitialisation du mot de passe"""
+    return render_template('hidden_admin/password_reset_success.html')
 
 @hidden_admin_bp.route('/_hidden_panel_admin/dashboard')
 def admin_dashboard():
@@ -186,12 +206,17 @@ def admin_dashboard():
         'access_level': 'root',
         'challenge_completed': True,
         'internal_notes': [
-            'Félicitations ! Vous avez réussi le challenge CTF !',
-            'Techniques utilisées: Énumération API + Brute-force OTP',
-            'Vulnérabilités exploitées: Information disclosure + OTP faible',
-            'Accès aux systèmes critiques désormais disponible'
+            '🎆 Félicitations ! Challenge CTF réussi avec succès !',
+            '🕵️ Techniques maîtrisées: Énumération + Brute-force OTP',
+            '🔓 Vulnérabilités exploitées: Information disclosure + Authentification faible',
+            '🚀 Statut: Accès administrateur complet obtenu',
+            '🏆 Votre expertise en sécurité a été démontrée !'
         ]
     }
+    
+    # Ajouter un message de félicitations pour le challenge
+    flash('🏆 CHALLENGE CTF TERMINÉ ! Vous avez réussi à accéder au panel administrateur !', 'success')
+    flash('🛡️ Consultez le flag CTF ci-dessous pour valider votre réussite.', 'info')
     
     return render_template('hidden_admin/dashboard.html', 
                          username=username, 

@@ -22,7 +22,7 @@
     },
     {
       "username": "superadmin",
-      "password": "supersecret",
+      "password": "hello",
       "email": "superadmin@internal.pentest-recruit.fr"
     }
   ]

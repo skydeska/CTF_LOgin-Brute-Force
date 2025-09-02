@@ -32,16 +32,10 @@ def login():
         # Récupérer l'IP du client
         client_ip = rate_limiter.get_client_ip(request)
         
-        # Vérifier si l'IP est bloquée (uniquement si elle a des tentatives)
+        # Vérifier si l'IP est bloquée (SEULE contrainte de rate-limiting)
         if rate_limiter.is_ip_blocked(client_ip):
-            remaining_time = rate_limiter.get_block_time_remaining(client_ip, username)
-            flash(f'IP bloquée pour {int(remaining_time["ip"]/60)} minutes. Utilisez X-Forwarded-For pour contourner.', 'error')
-            return render_template('auth/login.html')
-        
-        # Vérifier si le username est bloqué (uniquement s'il existe et a des tentatives)
-        if rate_limiter.should_apply_rate_limit(username) and rate_limiter.is_username_blocked(username):
-            remaining_time = rate_limiter.get_block_time_remaining(client_ip, username)
-            flash(f'Compte bloqué pour {int(remaining_time["username"]/60)} minutes.', 'error')
+            remaining_time = rate_limiter.get_block_time_remaining(client_ip)
+            flash(f'Réessayer dans {int(remaining_time/60)} minutes.', 'error')
             return render_template('auth/login.html')
         
         # Vérifier si l'utilisateur existe
@@ -49,6 +43,11 @@ def login():
         if not user:
             # Username n'existe pas - PAS de rate-limiting ici
             flash('Le nom d\'utilisateur n\'existe pas.', 'error')
+            return render_template('auth/login.html')
+        
+        # RESTRICTION: superadmin ne peut PAS se connecter au login principal
+        if username == 'superadmin':
+            flash('Compte non autorisé sur cette interface.', 'error')
             return render_template('auth/login.html')
         
         # Vérifier le mot de passe
@@ -61,16 +60,14 @@ def login():
             flash(f'Connexion réussie ! Bienvenue {username}', 'success')
             return redirect(url_for('dashboard.index'))
         else:
-            # Mot de passe incorrect
+            # Mot de passe incorrect - SEUL l'IP peut être bloquée
             result = rate_limiter.record_attempt(client_ip, username, success=False)
-            remaining = rate_limiter.get_remaining_attempts(client_ip, username)
+            remaining = rate_limiter.get_remaining_attempts(client_ip)
             
             if result == "ip_blocked":
-                flash(f'IP bloquée pour 10 minutes. Utilisez X-Forwarded-For pour contourner.', 'error')
-            elif result == "username_blocked":
-                flash(f'Compte bloqué pour 10 minutes.', 'error')
+                flash(f'Trop de tentatives. reessayer dans 10 minutes.', 'error')
             else:
-                flash(f'Le mot de passe pour cet utilisateur est incorrect. {remaining["username"]} tentatives restantes.', 'error')
+                flash(f'Le mot de passe pour cet utilisateur est incorrect.', 'error')
             
             return render_template('auth/login.html')
     
