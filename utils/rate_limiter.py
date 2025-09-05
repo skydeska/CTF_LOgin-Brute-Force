@@ -12,16 +12,15 @@ class RateLimiter:
         self.max_attempts = 3
         self.block_duration = 600  # 10 minutes en secondes
         
+
+    
     def get_client_ip(self, request):
-        """Récupère l'IP du client en tenant compte de X-Forwarded-For"""
-        # Pour le challenge CTF, on fait confiance à X-Forwarded-For
         forwarded_for = request.headers.get('X-Forwarded-For')
         if forwarded_for:
-            # Prendre la première IP de la chaîne
-            return forwarded_for.split(',')[0].strip()
-        
-        # Fallback sur l'IP réelle
+            # Prendre la DERNIÈRE IP de la chaîne (celle injectée par l’attaquant)
+            return forwarded_for.split(',')[-1].strip()
         return request.remote_addr
+
     
     def is_ip_blocked(self, ip):
         """Vérifie si une IP est bloquée"""
