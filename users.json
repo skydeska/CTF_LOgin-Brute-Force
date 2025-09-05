@@ -1,8 +1,8 @@
 {
   "users": [
     {
-      "username": "devroot",
-      "password": "sup3rs3cr3tm3g4c0det0cr4ckf0ry0ubr0th34",
+      "username": "devrootkali",
+      "password": "sup3rs3cr3tm3g4c0de",
       "email": "admin@pentest-recruit.fr"
     },
     {
@@ -11,7 +11,7 @@
       "email": "pentester1@pentest-recruit.fr"
     },
     {
-      "username": "hacker2024",
+      "username": "h@ck3r",
       "password": "ctf_master",
       "email": "hacker@ctf-master.com"
     },
@@ -22,7 +22,7 @@
     },
     {
       "username": "superadmin",
-      "password": "word",
+      "password": "qwerty",
       "email": "superadmin@internal.pentest-recruit.fr"
     }
   ]

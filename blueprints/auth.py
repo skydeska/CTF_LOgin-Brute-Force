@@ -35,7 +35,7 @@ def login():
         # Vérifier si l'IP est bloquée (SEULE contrainte de rate-limiting)
         if rate_limiter.is_ip_blocked(client_ip):
             remaining_time = rate_limiter.get_block_time_remaining(client_ip)
-            flash(f'Réessayer dans {int(remaining_time/60)} minutes.', 'error')
+            flash(f'Trop de tentatives. reessayer dans {int(remaining_time/60)} minutes.', 'error')
             return render_template('auth/login.html')
         
         # Vérifier si l'utilisateur existe
